@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Register | Maharaja's Darbar</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div id="header"></div>
+
+  <div class="auth-page">
+    <div class="auth-card">
+      <h2>Join the Darbar</h2>
+      <p class="subtitle">Create an account to order & save favourites</p>
+      <form onsubmit="handleRegister(event)">
+        <div class="form-group">
+          <label>Full Name</label>
+          <input type="text" name="name" class="form-control" required>
+        </div>
+        <div class="form-group">
+          <label>Email</label>
+          <input type="email" name="email" class="form-control" required>
+        </div>
+        <div class="form-group">
+          <label>Password</label>
+          <input type="password" name="password" class="form-control" required minlength="6">
+        </div>
+        <button type="submit" class="btn btn-primary btn-block">Register</button>
+      </form>
+      <div class="auth-footer">
+        Already have an account? <a href="login.html">Login</a>
+      </div>
+    </div>
+  </div>
+
+  <div id="footer"></div>
+
+  <script src="js/app.js"></script>
+  <script>
+    document.getElementById('header').innerHTML = renderHeader('');
+    document.getElementById('footer').innerHTML = renderFooter();
+
+    function handleRegister(e) {
+      e.preventDefault();
+      const form = e.target;
+      const result = register(form.name.value, form.email.value, form.password.value);
+      if (result.success) {
+        showToast('Welcome to Maharaja\'s Darbar!', 'success');
+        setTimeout(() => window.location.href = 'products.html', 800);
+      } else {
+        showToast(result.message, 'error');
+      }
+    }
+  </script>
+</body>
+</html>
