@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Login | Maharaja's Darbar</title>
+  <title>Login | Radhe Radhe Restaurant</title>
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
@@ -12,7 +12,7 @@
   <div class="auth-page">
     <div class="auth-card">
       <h2>Welcome Back</h2>
-      <p class="subtitle">Sign in to order & reserve</p>
+      <p class="subtitle">Sign in to order, reserve & leave reviews</p>
       <form onsubmit="handleLogin(event)">
         <div class="form-group">
           <label>Email</label>
@@ -27,6 +27,11 @@
       <div class="auth-footer">
         New guest? <a href="register.html">Create an account</a>
       </div>
+      <p style="margin-top:1.25rem;font-size:0.8rem;color:var(--maroon-500);text-align:center;line-height:1.5">
+        <strong>Admin access:</strong><br>
+        Email: admin@radheradhe.com<br>
+        Password: radhe123
+      </p>
     </div>
   </div>
 
@@ -42,7 +47,7 @@
       const form = e.target;
       const result = login(form.email.value, form.password.value);
       if (result.success) {
-        showToast('Welcome, ' + result.user.name.split(' ')[0] + '!', 'success');
+        showToast('Radhe Radhe, ' + result.user.name.split(' ')[0] + '!', 'success');
         setTimeout(() => {
           window.location.href = result.user.role === 'admin' ? 'admin.html' : 'products.html';
         }, 800);
