@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Register | Maharaja's Darbar</title>
+  <title>Register | Radhe Radhe Restaurant</title>
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
@@ -11,8 +11,8 @@
 
   <div class="auth-page">
     <div class="auth-card">
-      <h2>Join the Darbar</h2>
-      <p class="subtitle">Create an account to order & save favourites</p>
+      <h2>Join Us</h2>
+      <p class="subtitle">Create an account to order, save favourites & leave reviews</p>
       <form onsubmit="handleRegister(event)">
         <div class="form-group">
           <label>Full Name</label>
@@ -46,7 +46,7 @@
       const form = e.target;
       const result = register(form.name.value, form.email.value, form.password.value);
       if (result.success) {
-        showToast('Welcome to Maharaja\'s Darbar!', 'success');
+        showToast('Welcome to Radhe Radhe Restaurant! 🙏', 'success');
         setTimeout(() => window.location.href = 'products.html', 800);
       } else {
         showToast(result.message, 'error');
