@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Reviews | Radhe Radhe Restaurant</title>
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    .review-card {
+      background: white; border-radius: 12px; padding: 1.25rem 1.5rem;
+      box-shadow: var(--shadow); border-left: 4px solid var(--gold); margin-bottom: 1rem;
+    }
+    .review-card .meta { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 0.4rem; }
+    .review-form-box {
+      background: white; border-radius: 16px; padding: 1.75rem; box-shadow: var(--shadow);
+      border-top: 4px solid var(--gold); max-width: 560px; margin: 0 auto 2.5rem;
+    }
+  </style>
+</head>
+<body>
+  <div id="header"></div>
+
+  <section class="section">
+    <div class="container">
+      <h2 class="section-title">Guest Reviews</h2>
+      <p class="section-subtitle">Share your experience at Radhe Radhe</p>
+
+      <!-- Write a review -->
+      <div class="review-form-box">
+        <h3 style="margin-bottom:1rem;text-align:center">Write a Review</h3>
+        <form id="page-review-form" onsubmit="handlePageReview(event)">
+          <div class="form-group">
+            <label>Your Name *</label>
+            <input type="text" id="pr-name" class="form-control" required>
+          </div>
+          <div class="form-group">
+            <label>Select Dish *</label>
+            <select id="pr-product" class="form-control" required>
+              <option value="">Choose a dish...</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Rating *</label>
+            <div class="size-options" id="pr-stars">
+              <button type="button" class="size-btn rating-star" data-rating="1" onclick="selectPageRating(this)" style="font-size:1.3rem;min-width:48px">★</button>
+              <button type="button" class="size-btn rating-star" data-rating="2" onclick="selectPageRating(this)" style="font-size:1.3rem;min-width:48px">★</button>
+              <button type="button" class="size-btn rating-star" data-rating="3" onclick="selectPageRating(this)" style="font-size:1.3rem;min-width:48px">★</button>
+              <button type="button" class="size-btn rating-star" data-rating="4" onclick="selectPageRating(this)" style="font-size:1.3rem;min-width:48px">★</button>
+              <button type="button" class="size-btn rating-star" data-rating="5" onclick="selectPageRating(this)" style="font-size:1.3rem;min-width:48px">★</button>
+            </div>
+            <input type="hidden" id="pr-rating" required>
+          </div>
+          <div class="form-group">
+            <label>Your Review *</label>
+            <textarea id="pr-comment" class="form-control" rows="3" placeholder="Tell us about the food, service, ambiance..." required minlength="10"></textarea>
+          </div>
+          <button type="submit" class="btn btn-primary btn-block">Submit Review</button>
+        </form>
+      </div>
+
+      <!-- All reviews list -->
+      <div id="reviews-list"></div>
+      <div id="no-reviews" class="empty-state hidden">
+        <p>No reviews yet. Be the first to share your experience!</p>
+      </div>
+    </div>
+  </section>
+
+  <div id="footer"></div>
+
+  <script src="js/app.js"></script>
+  <script>
+    document.getElementById('header').innerHTML = renderHeader('reviews');
+    document.getElementById('footer').innerHTML = renderFooter();
+
+    // Prefill name if logged in
+    const session = getSession();
+    if (session) document.getElementById('pr-name').value = session.name;
+
+    // Fill product dropdown
+    const sel = document.getElementById('pr-product');
+    getProducts().forEach(p => {
+      const opt = document.createElement('option');
+      opt.value = p.id;
+      opt.textContent = p.name + ' (' + p.category + ')';
+      sel.appendChild(opt);
+    });
+
+    function selectPageRating(btn) {
+      const rating = Number(btn.dataset.rating);
+      document.getElementById('pr-rating').value = rating;
+      document.querySelectorAll('#pr-stars .rating-star').forEach(b => {
+        const n = Number(b.dataset.rating);
+        b.style.color = n <= rating ? 'var(--gold)' : '#ccc';
+        b.classList.toggle('selected', n === rating);
+      });
+    }
+
+    function handlePageReview(e) {
+      e.preventDefault();
+      const productId = document.getElementById('pr-product').value;
+      const product = getProductById(productId);
+      const userName = document.getElementById('pr-name').value.trim();
+      const rating = Number(document.getElementById('pr-rating').value);
+      const comment = document.getElementById('pr-comment').value.trim();
+      if (!productId || !userName || !rating || !comment) {
+        showToast('Please fill all fields and select a rating', 'error');
+        return;
+      }
+      if (comment.length < 10) {
+        showToast('Review must be at least 10 characters', 'error');
+        return;
+      }
+      addReview({
+        productId: productId,
+        productName: product.name,
+        userName: userName,
+        rating: rating,
+        comment: comment,
+        userId: session ? session.id : null
+      });
+      showToast('Thank you for your review! Radhe Radhe 🙏', 'success');
+      e.target.reset();
+      document.getElementById('pr-rating').value = '';
+      document.querySelectorAll('#pr-stars .rating-star').forEach(b => { b.style.color = '#ccc'; b.classList.remove('selected'); });
+      if (session) document.getElementById('pr-name').value = session.name;
+      loadReviews();
+    }
+
+    function loadReviews() {
+      const reviews = getReviews();
+      const list = document.getElementById('reviews-list');
+      const empty = document.getElementById('no-reviews');
+      if (!reviews.length) {
+        list.innerHTML = '';
+        empty.classList.remove('hidden');
+        return;
+      }
+      empty.classList.add('hidden');
+      list.innerHTML = reviews.map(r =>
+        '<div class="review-card">' +
+          '<div class="meta">' +
+            '<div><strong>' + r.userName + '</strong> · <span style="color:var(--maroon-600)">' + r.productName + '</span></div>' +
+            '<span style="font-size:0.8rem;color:var(--maroon-500)">' + new Date(r.createdAt).toLocaleDateString() + '</span>' +
+          '</div>' +
+          '<div style="margin-bottom:0.35rem">' + starsHtml(r.rating, 15) + '</div>' +
+          '<p style="color:var(--maroon-700);font-size:0.95rem">' + r.comment + '</p>' +
+        '</div>'
+      ).join('');
+    }
+
+    loadReviews();
+  </script>
+</body>
+</html>
