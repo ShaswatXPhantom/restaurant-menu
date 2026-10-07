@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Admin | Maharaja's Darbar</title>
+  <title>Admin | Radhe Radhe Restaurant</title>
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
@@ -13,20 +13,22 @@
     <a href="#dashboard" class="active" onclick="showSection('dashboard', this)">📊 Dashboard</a>
     <a href="#inventory" onclick="showSection('inventory', this)">🍽️ Menu</a>
     <a href="#bookings" onclick="showSection('bookings', this)">📅 Orders</a>
-    <a href="#add-product" onclick="showSection('add-product', this)">➕ Add</a>
+    <a href="#reviews" onclick="showSection('reviews', this)">⭐ Reviews</a>
+    <a href="#add-product" onclick="showSection('add-product', this)">➕ Upload</a>
     <a href="index.html">← Site</a>
   </div>
 
   <div class="admin-layout">
     <aside class="admin-sidebar">
       <div class="logo" style="padding:0 1.25rem 1.5rem; color: var(--gold-light); font-family: Georgia, serif;">
-        Maharaja's
+        Radhe Radhe
       </div>
       <ul class="admin-nav">
         <li><a href="#dashboard" class="active" onclick="showSection('dashboard', this)">📊 Dashboard</a></li>
         <li><a href="#inventory" onclick="showSection('inventory', this)">🍽️ Menu Items</a></li>
         <li><a href="#bookings" onclick="showSection('bookings', this)">📅 Orders</a></li>
-        <li><a href="#add-product" onclick="showSection('add-product', this)">➕ Add Dish</a></li>
+        <li><a href="#reviews" onclick="showSection('reviews', this)">⭐ Reviews</a></li>
+        <li><a href="#add-product" onclick="showSection('add-product', this)">➕ Upload Item</a></li>
         <li><a href="index.html">← Back to Site</a></li>
       </ul>
     </aside>
@@ -39,14 +41,7 @@
           <h3 style="padding:1rem 1.1rem 0">Recent Orders</h3>
           <table>
             <thead>
-              <tr>
-                <th>Customer</th>
-                <th>Dish</th>
-                <th>Portion</th>
-                <th>Qty</th>
-                <th>Status</th>
-                <th>Date</th>
-              </tr>
+              <tr><th>Customer</th><th>Dish</th><th>Portion</th><th>Qty</th><th>Status</th><th>Date</th></tr>
             </thead>
             <tbody id="recent-bookings"></tbody>
           </table>
@@ -56,19 +51,12 @@
       <div id="section-inventory" class="hidden">
         <div class="flex justify-between items-center mb-2">
           <h2>Menu Management</h2>
-          <button class="btn btn-primary btn-sm" onclick="showSection('add-product')">+ Add Dish</button>
+          <button class="btn btn-primary btn-sm" onclick="showSection('add-product')">+ Upload Item</button>
         </div>
         <div class="table-wrapper">
           <table>
             <thead>
-              <tr>
-                <th>Image</th>
-                <th>Name</th>
-                <th>Category</th>
-                <th>Price</th>
-                <th>Stock</th>
-                <th>Actions</th>
-              </tr>
+              <tr><th>Image</th><th>Name</th><th>Category</th><th>Price</th><th>Stock</th><th>Actions</th></tr>
             </thead>
             <tbody id="inventory-table"></tbody>
           </table>
@@ -80,29 +68,34 @@
         <div class="table-wrapper">
           <table>
             <thead>
-              <tr>
-                <th>ID</th>
-                <th>Customer</th>
-                <th>Dish</th>
-                <th>Portion / Qty</th>
-                <th>Phone</th>
-                <th>Status</th>
-                <th>Actions</th>
-              </tr>
+              <tr><th>ID</th><th>Customer</th><th>Dish</th><th>Portion / Qty</th><th>Phone</th><th>Status</th><th>Actions</th></tr>
             </thead>
             <tbody id="bookings-table"></tbody>
           </table>
         </div>
       </div>
 
+      <div id="section-reviews" class="hidden">
+        <h2 style="margin-bottom:1.5rem">Customer Reviews</h2>
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr><th>Guest</th><th>Dish</th><th>Rating</th><th>Comment</th><th>Date</th><th>Actions</th></tr>
+            </thead>
+            <tbody id="reviews-table"></tbody>
+          </table>
+        </div>
+      </div>
+
       <div id="section-add-product" class="hidden">
-        <h2 style="margin-bottom:1.5rem" id="product-form-title">Add New Dish</h2>
+        <h2 style="margin-bottom:0.5rem" id="product-form-title">Upload New Menu Item</h2>
+        <p style="color:var(--maroon-600);margin-bottom:1.5rem;font-size:0.95rem">Admin only — add dishes that appear on the public menu.</p>
         <div style="background:white;padding:1.5rem;border-radius:12px;box-shadow:var(--shadow);max-width:600px;border-top:4px solid var(--gold)">
           <form id="product-form" onsubmit="handleProductSubmit(event)">
             <input type="hidden" id="edit-product-id">
             <div class="form-group">
               <label>Dish Name *</label>
-              <input type="text" id="p-name" class="form-control" required>
+              <input type="text" id="p-name" class="form-control" required placeholder="e.g. Paneer Butter Masala">
             </div>
             <div class="form-row">
               <div class="form-group">
@@ -126,7 +119,7 @@
                 <input type="number" id="p-original" class="form-control" min="0">
               </div>
               <div class="form-group">
-                <label>Availability *</label>
+                <label>Availability / Stock *</label>
                 <input type="number" id="p-stock" class="form-control" min="0" required>
               </div>
             </div>
@@ -136,17 +129,17 @@
             </div>
             <div class="form-group">
               <label>Image URL</label>
-              <input type="url" id="p-image" class="form-control" placeholder="https://...">
+              <input type="url" id="p-image" class="form-control" placeholder="https://example.com/dish.jpg">
             </div>
             <div class="form-group">
               <label>Description</label>
-              <textarea id="p-desc" class="form-control" rows="2"></textarea>
+              <textarea id="p-desc" class="form-control" rows="2" placeholder="Short description of the dish"></textarea>
             </div>
             <div class="form-group">
               <label>Badge (optional)</label>
-              <input type="text" id="p-badge" class="form-control" placeholder="Bestseller, Signature, etc.">
+              <input type="text" id="p-badge" class="form-control" placeholder="Bestseller, Signature, New...">
             </div>
-            <button type="submit" class="btn btn-primary">Save Dish</button>
+            <button type="submit" class="btn btn-primary">Upload / Save Item</button>
             <button type="button" class="btn btn-secondary" onclick="resetProductForm()">Cancel</button>
           </form>
         </div>
@@ -159,7 +152,7 @@
     initData();
 
     if (!isAdmin()) {
-      showToast('Admin access required. Please login as admin.', 'error');
+      showToast('Admin password required. Login as admin first.', 'error');
       setTimeout(() => window.location.href = 'login.html', 1200);
     } else {
       document.getElementById('header').innerHTML = renderHeader('admin');
@@ -184,21 +177,21 @@
       if (name === 'dashboard') loadDashboard();
       if (name === 'inventory') loadInventory();
       if (name === 'bookings') loadBookings();
+      if (name === 'reviews') loadAdminReviews();
       if (name === 'add-product') resetProductForm();
     }
 
     function loadDashboard() {
       const products = getProducts();
       const bookings = getBookings();
+      const reviews = getReviews();
       const pending = bookings.filter(b => b.status === 'pending').length;
-      const totalStock = products.reduce((s, p) => s + (p.stock || 0), 0);
-      const lowStock = products.filter(p => p.stock > 0 && p.stock <= 10).length;
 
       document.getElementById('stats-grid').innerHTML = `
         <div class="stat-card"><div class="label">Menu Items</div><div class="value">${products.length}</div></div>
-        <div class="stat-card"><div class="label">Total Portions</div><div class="value">${totalStock}</div></div>
         <div class="stat-card"><div class="label">Pending Orders</div><div class="value">${pending}</div></div>
-        <div class="stat-card"><div class="label">Limited Items</div><div class="value">${lowStock}</div></div>
+        <div class="stat-card"><div class="label">Total Reviews</div><div class="value">${reviews.length}</div></div>
+        <div class="stat-card"><div class="label">Total Orders</div><div class="value">${bookings.length}</div></div>
       `;
 
       const recent = bookings.slice(0, 5);
@@ -251,6 +244,29 @@
       `).join('') : '<tr><td colspan="7" style="text-align:center">No orders yet</td></tr>';
     }
 
+    function loadAdminReviews() {
+      const reviews = getReviews();
+      document.getElementById('reviews-table').innerHTML = reviews.length ? reviews.map(r => `
+        <tr>
+          <td>${r.userName}</td>
+          <td>${r.productName}</td>
+          <td>${starsHtml(r.rating, 14)}</td>
+          <td style="max-width:220px;font-size:0.9rem">${r.comment}</td>
+          <td>${new Date(r.createdAt).toLocaleDateString()}</td>
+          <td><button class="btn btn-sm btn-danger" onclick="adminDeleteReview('${r.id}')">Delete</button></td>
+        </tr>
+      `).join('') : '<tr><td colspan="6" style="text-align:center">No reviews yet</td></tr>';
+    }
+
+    function adminDeleteReview(id) {
+      if (confirm('Delete this review?')) {
+        deleteReview(id);
+        showToast('Review deleted', 'success');
+        loadAdminReviews();
+        loadDashboard();
+      }
+    }
+
     function setBookingStatus(id, status) {
       updateBookingStatus(id, status);
       showToast('Order marked as ' + status, 'success');
@@ -271,14 +287,14 @@
       document.getElementById('p-image').value = p.image || '';
       document.getElementById('p-desc').value = p.description || '';
       document.getElementById('p-badge').value = p.badge || '';
-      document.getElementById('product-form-title').textContent = 'Edit Dish';
+      document.getElementById('product-form-title').textContent = 'Edit Menu Item';
       showSection('add-product');
     }
 
     function resetProductForm() {
       document.getElementById('product-form').reset();
       document.getElementById('edit-product-id').value = '';
-      document.getElementById('product-form-title').textContent = 'Add New Dish';
+      document.getElementById('product-form-title').textContent = 'Upload New Menu Item';
     }
 
     function handleProductSubmit(e) {
@@ -291,26 +307,26 @@
         originalPrice: document.getElementById('p-original').value ? Number(document.getElementById('p-original').value) : null,
         stock: Number(document.getElementById('p-stock').value),
         sizes: document.getElementById('p-sizes').value.split(',').map(s => s.trim()).filter(Boolean),
-        image: document.getElementById('p-image').value || 'https://via.placeholder.com/400x300/8B1A1A/C9A227?text=Darbar',
+        image: document.getElementById('p-image').value || 'https://via.placeholder.com/400x300/8B1A1A/C9A227?text=Radhe+Radhe',
         description: document.getElementById('p-desc').value,
         badge: document.getElementById('p-badge').value || null
       };
 
       if (id) {
         updateProduct(id, data);
-        showToast('Dish updated', 'success');
+        showToast('Item updated', 'success');
       } else {
         addProduct(data);
-        showToast('Dish added', 'success');
+        showToast('Item uploaded to menu!', 'success');
       }
       resetProductForm();
       showSection('inventory');
     }
 
     function confirmDelete(id) {
-      if (confirm('Delete this dish permanently?')) {
+      if (confirm('Delete this item permanently?')) {
         deleteProduct(id);
-        showToast('Dish deleted', 'success');
+        showToast('Item deleted', 'success');
         loadInventory();
       }
     }
