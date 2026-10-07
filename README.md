@@ -1,40 +1,48 @@
-# Maharaja's Darbar — Restaurant Menu
+# Radhe Radhe Restaurant
 
-Royal Indian restaurant website with elegant maroon & gold theme.
+Full end-to-end pure vegetarian restaurant website — menu, orders, reviews, and admin item upload.
 
-## Features
+**Repo:** https://github.com/ShaswatXPhantom/restaurant-menu
 
-- Full menu with categories (Starters, Main Course, Breads & Rice, Desserts, Beverages)
-- Search, filters & sorting
-- Order / table reservation flow
-- Favourites list
-- User login / register
-- Admin dashboard for menu & orders
-- Fully responsive
-- Regal maroon + gold theme
+## Features (end-to-end)
 
-## How to View
+| Feature | Description |
+|---------|-------------|
+| **Menu** | Browse, search, filter by category, sort by price |
+| **Orders** | Login → Order dish with portion, qty, phone |
+| **Reviews** | Write star ratings + comments on any dish; public reviews page |
+| **Favourites** | Save dishes (login required) |
+| **Reservations** | Contact form for table booking |
+| **Admin panel** | Password-protected: upload/edit/delete menu items, manage orders, delete reviews |
+| **Theme** | Maroon + gold royal Indian look |
 
-1. Enable **GitHub Pages**: Settings → Pages → Source: Deploy from a branch → `main` → `/ (root)` → Save
-2. Site: `https://shaswatxphantom.github.io/restaurant-menu/`
+## Admin login (item upload)
 
-Or open `index.html` in a browser.
+1. Go to **Login**
+2. Email: `admin@radheradhe.com`
+3. Password: `radhe123`
+4. You are redirected to **Admin** → **Upload Item** to add dishes
 
-## Admin Login (Demo)
+## How to view
 
-- **Email**: `admin@maharajasdarbar.com`
-- **Password**: `admin123`
+1. Enable **GitHub Pages**: Settings → Pages → branch `main` → root → Save
+2. Live site: `https://shaswatxphantom.github.io/restaurant-menu/`
 
-## Store Info
+Or open `index.html` in a browser (localStorage works offline).
 
-**Address**: Connaught Place, New Delhi 110001  
-**Phone**: +91 11 4567 8901  
-**Hours**: Lunch 12–3:30 PM · Dinner 7–11 PM
+## Pages
 
-## Tech Stack
+- `index.html` — Home, specials, review previews
+- `products.html` — Full menu
+- `reviews.html` — Read & write reviews
+- `wishlist.html` — Favourites
+- `contact.html` — Reserve table
+- `login.html` / `register.html`
+- `admin.html` — Dashboard, menu upload, orders, reviews
 
-Pure HTML + CSS + Vanilla JavaScript  
-Data in browser localStorage (no backend required)
+## Tech
+
+Pure HTML + CSS + Vanilla JS · Data in `localStorage` (no backend)
 
 ---
-Built as a royal Indian restaurant menu experience
+Radhe Radhe 🙏
