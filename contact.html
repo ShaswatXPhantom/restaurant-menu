@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Contact & Reservations | Maharaja's Darbar</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div id="header"></div>
+
+  <section class="section">
+    <div class="container">
+      <h2 class="section-title">Visit the Darbar</h2>
+      <p class="section-subtitle">We await your presence</p>
+
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:2rem;max-width:900px;margin:0 auto">
+        <div style="background:white;padding:2rem;border-radius:16px;box-shadow:var(--shadow);border-top:4px solid var(--gold)">
+          <h3 style="margin-bottom:1rem">Location & Hours</h3>
+          <p style="margin-bottom:0.8rem"><strong>Address</strong><br>Connaught Place<br>New Delhi 110001</p>
+          <p style="margin-bottom:0.8rem"><strong>Phone</strong><br><a href="tel:+911145678901">+91 11 4567 8901</a></p>
+          <p style="margin-bottom:1rem"><strong>Hours</strong><br>Lunch: 12 PM – 3:30 PM<br>Dinner: 7 PM – 11 PM<br>Open all days</p>
+          <a href="https://wa.me/911145678901" target="_blank" class="btn btn-primary" style="margin-right:0.5rem">WhatsApp</a>
+        </div>
+
+        <div style="background:white;padding:2rem;border-radius:16px;box-shadow:var(--shadow);border-top:4px solid var(--gold)">
+          <h3 style="margin-bottom:1rem">Reserve a Table</h3>
+          <form onsubmit="handleContact(event)">
+            <div class="form-group">
+              <label>Name</label>
+              <input type="text" name="name" class="form-control" required>
+            </div>
+            <div class="form-group">
+              <label>Phone</label>
+              <input type="tel" name="phone" class="form-control" required>
+            </div>
+            <div class="form-group">
+              <label>Guests / Message</label>
+              <textarea name="message" class="form-control" rows="3" placeholder="Number of guests, preferred time..." required></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary btn-block">Request Reservation</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div id="footer"></div>
+
+  <script src="js/app.js"></script>
+  <script>
+    document.getElementById('header').innerHTML = renderHeader('contact');
+    document.getElementById('footer').innerHTML = renderFooter();
+
+    function handleContact(e) {
+      e.preventDefault();
+      showToast('Reservation request received! We will call you shortly.', 'success');
+      e.target.reset();
+    }
+  </script>
+</body>
+</html>
