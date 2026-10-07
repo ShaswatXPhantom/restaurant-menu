@@ -42,13 +42,13 @@
 <body>
   <div id="header"></div>
 
-  <div class="promo-bar">🙏 Radhe Radhe · Pure Vegetarian · Order Online & Reserve Tables</div>
+  <div class="promo-bar" id="promo-bar">🙏 Radhe Radhe · Pure Vegetarian · Order Online & Reserve Tables</div>
 
   <section class="hero-clean">
     <div class="hero-inner">
       <div class="ornament">◆ ◆ ◆</div>
-      <h1>Radhe <span>Radhe</span></h1>
-      <p>Pure vegetarian Indian cuisine served with devotion. Fresh, flavourful, and made with love.</p>
+      <h1 id="hero-title">Radhe <span>Radhe</span></h1>
+      <p id="hero-sub">Pure vegetarian Indian cuisine served with devotion. Fresh, flavourful, and made with love.</p>
       <div class="hero-btns" style="display:flex;justify-content:center;flex-wrap:wrap;gap:0.75rem">
         <a href="products.html" class="btn btn-primary">View Menu</a>
         <a href="contact.html" class="btn btn-outline">Reserve Table</a>
@@ -125,8 +125,20 @@
     </div>
   </section>
 
+  <!-- DYNAMIC LOCATION SECTION -->
+  <section class="section" id="home-location-section">
+    <div class="container">
+      <h2 class="section-title">Find Us</h2>
+      <p class="section-subtitle" id="home-location-sub">Visit us for a divine dining experience</p>
+      <div id="home-location"></div>
+      <div class="text-center mt-2">
+        <a href="contact.html" class="btn btn-primary">Reserve a Table</a>
+      </div>
+    </div>
+  </section>
+
   <section class="cta-band">
-    <h2>Radhe Radhe — Come Dine With Us</h2>
+    <h2 id="cta-title">Radhe Radhe — Come Dine With Us</h2>
     <p>Browse the menu, place an order, or book a table today.</p>
     <a href="products.html" class="btn">Browse Menu</a>
   </section>
@@ -135,17 +147,40 @@
 
   <script src="js/app.js"></script>
   <script>
+    function applyHomeSettings() {
+      var s = typeof getSettings === 'function' ? getSettings() : {};
+      var name = s.restaurantName || 'Radhe Radhe Restaurant';
+      var short = name.replace(/\s*Restaurant\s*$/i, '').trim() || 'Radhe Radhe';
+      var parts = short.split(/\s+/);
+      var titleHtml = parts.length > 1
+        ? parts.slice(0, -1).join(' ') + ' <span>' + parts[parts.length - 1] + '</span>'
+        : '<span>' + short + '</span>';
+
+      document.title = name + ' | Pure Vegetarian Indian Cuisine';
+      document.getElementById('promo-bar').textContent = s.promoText || '🙏 Radhe Radhe · Pure Vegetarian · Order Online & Reserve Tables';
+      document.getElementById('hero-title').innerHTML = titleHtml;
+      document.getElementById('hero-sub').textContent = s.heroSubtitle || s.tagline || 'Pure vegetarian Indian cuisine served with devotion.';
+      document.getElementById('cta-title').textContent = short + ' — Come Dine With Us';
+      document.getElementById('home-location-sub').textContent =
+        (s.address || '') + (s.city ? ', ' + s.city : '') || 'Visit us for a divine dining experience';
+      if (typeof renderLocationBlock === 'function') {
+        document.getElementById('home-location').innerHTML = renderLocationBlock();
+      }
+    }
+
     document.getElementById('header').innerHTML = renderHeader('home');
     document.getElementById('footer').innerHTML = renderFooter();
-    const featured = getProducts().filter(p => p.stock > 0).slice(0, 4);
+    applyHomeSettings();
+
+    var featured = getProducts().filter(function (p) { return p.stock > 0; }).slice(0, 4);
     document.getElementById('featured-products').innerHTML = featured.map(renderProductCard).join('');
 
-    const reviews = getReviews().slice(0, 3);
-    document.getElementById('home-reviews').innerHTML = reviews.map(r =>
-      '<div class="review-preview"><div class="stars">' + starsHtml(r.rating, 16) + '</div>' +
-      '<p style="font-size:0.95rem;margin-bottom:0.5rem;color:var(--maroon-700)">"' + r.comment + '"</p>' +
-      '<div style="font-size:0.85rem;color:var(--maroon-600)"><strong>' + r.userName + '</strong> · ' + r.productName + '</div></div>'
-    ).join('');
+    var reviews = getReviews().slice(0, 3);
+    document.getElementById('home-reviews').innerHTML = reviews.map(function (r) {
+      return '<div class="review-preview"><div class="stars">' + starsHtml(r.rating, 16) + '</div>' +
+        '<p style="font-size:0.95rem;margin-bottom:0.5rem;color:var(--maroon-700)">"' + r.comment + '"</p>' +
+        '<div style="font-size:0.85rem;color:var(--maroon-600)"><strong>' + r.userName + '</strong> · ' + r.productName + '</div></div>';
+    }).join('');
   </script>
 </body>
 </html>

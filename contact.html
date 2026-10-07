@@ -34,9 +34,10 @@
     document.getElementById('header').innerHTML = renderHeader('contact');
     document.getElementById('footer').innerHTML = renderFooter();
     var s = getSettings();
-    document.getElementById('contact-subtitle').textContent = s.address + (s.city ? ', ' + s.city : '');
+    document.getElementById('contact-subtitle').textContent =
+      (s.address || '') + (s.city ? ', ' + s.city : '') || 'Location, hours & reservations';
     document.getElementById('location-area').innerHTML = renderLocationBlock();
-    document.title = 'Location & Contact | ' + s.restaurantName;
+    document.title = 'Location & Contact | ' + (s.restaurantName || 'Radhe Radhe Restaurant');
     function handleContact(e) {
       e.preventDefault();
       showToast('Reservation request received! We will call you shortly. 🙏', 'success');

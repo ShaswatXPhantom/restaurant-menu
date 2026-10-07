@@ -15,6 +15,7 @@
     <a href="#bookings" onclick="showSection('bookings', this)">📅 Orders</a>
     <a href="#reviews" onclick="showSection('reviews', this)">⭐ Reviews</a>
     <a href="#add-product" onclick="showSection('add-product', this)">➕ Upload</a>
+    <a href="#settings" onclick="showSection('settings', this)">📍 Location</a>
     <a href="index.html">← Site</a>
   </div>
 
@@ -29,6 +30,7 @@
         <li><a href="#bookings" onclick="showSection('bookings', this)">📅 Orders</a></li>
         <li><a href="#reviews" onclick="showSection('reviews', this)">⭐ Reviews</a></li>
         <li><a href="#add-product" onclick="showSection('add-product', this)">➕ Upload Item</a></li>
+        <li><a href="#settings" onclick="showSection('settings', this)">📍 Location & Info</a></li>
         <li><a href="index.html">← Back to Site</a></li>
       </ul>
     </aside>
@@ -144,6 +146,96 @@
           </form>
         </div>
       </div>
+
+      <!-- LOCATION & INFO (admin-editable) -->
+      <div id="section-settings" class="hidden">
+        <h2 style="margin-bottom:0.5rem">📍 Location & Restaurant Info</h2>
+        <p style="color:var(--maroon-600);margin-bottom:1.5rem;font-size:0.95rem">
+          Edit name, address, map, hours and contact. Changes appear on Home, Contact and Footer instantly.
+        </p>
+        <div style="background:white;padding:1.5rem;border-radius:12px;box-shadow:var(--shadow);max-width:720px;border-top:4px solid var(--gold)">
+          <form id="settings-form" onsubmit="handleSettingsSubmit(event)">
+            <div class="form-group">
+              <label>Restaurant Name *</label>
+              <input type="text" id="s-name" class="form-control" required placeholder="Radhe Radhe Restaurant">
+            </div>
+            <div class="form-group">
+              <label>Tagline</label>
+              <input type="text" id="s-tagline" class="form-control" placeholder="Pure vegetarian Indian cuisine...">
+            </div>
+            <div class="form-group">
+              <label>About / Short description</label>
+              <textarea id="s-about" class="form-control" rows="2" placeholder="Welcome message"></textarea>
+            </div>
+            <div class="form-group">
+              <label>Promo bar text (top of home)</label>
+              <input type="text" id="s-promo" class="form-control" placeholder="🙏 Radhe Radhe · Pure Vegetarian · ...">
+            </div>
+            <div class="form-group">
+              <label>Hero subtitle (home)</label>
+              <input type="text" id="s-hero" class="form-control" placeholder="Pure vegetarian Indian cuisine...">
+            </div>
+
+            <h3 style="margin:1.5rem 0 1rem;color:var(--maroon-700);font-size:1.1rem">📍 Address & Map</h3>
+            <div class="form-group">
+              <label>Street / Area address *</label>
+              <input type="text" id="s-address" class="form-control" required placeholder="Near Temple Road">
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label>City *</label>
+                <input type="text" id="s-city" class="form-control" required placeholder="Delhi">
+              </div>
+              <div class="form-group">
+                <label>Pincode</label>
+                <input type="text" id="s-pincode" class="form-control" placeholder="110001">
+              </div>
+            </div>
+            <div class="form-group">
+              <label>Google Maps link (Open Map button)</label>
+              <input type="url" id="s-mapurl" class="form-control" placeholder="https://maps.google.com/?q=Your+Restaurant">
+              <small style="color:var(--maroon-500);font-size:0.8rem">Tip: Open Google Maps → Share → Copy link</small>
+            </div>
+            <div class="form-group">
+              <label>Map embed URL (iframe)</label>
+              <input type="url" id="s-mapembed" class="form-control" placeholder="https://maps.google.com/maps?q=Your+Place&output=embed">
+              <small style="color:var(--maroon-500);font-size:0.8rem">Add <code>&amp;output=embed</code> to a maps search URL, or use Embed map → Copy HTML src</small>
+            </div>
+
+            <h3 style="margin:1.5rem 0 1rem;color:var(--maroon-700);font-size:1.1rem">📞 Contact & Hours</h3>
+            <div class="form-row">
+              <div class="form-group">
+                <label>Phone *</label>
+                <input type="text" id="s-phone" class="form-control" required placeholder="+91 98765 43210">
+              </div>
+              <div class="form-group">
+                <label>WhatsApp (country code + number, no +)</label>
+                <input type="text" id="s-whatsapp" class="form-control" placeholder="919876543210">
+              </div>
+            </div>
+            <div class="form-group">
+              <label>Email</label>
+              <input type="email" id="s-email" class="form-control" placeholder="hello@radheradhe.com">
+            </div>
+            <div class="form-group">
+              <label>Hours (short, for footer)</label>
+              <input type="text" id="s-hours" class="form-control" placeholder="Open daily 11 AM – 10 PM">
+            </div>
+            <div class="form-group">
+              <label>Hours (detailed, for location page)</label>
+              <input type="text" id="s-hoursdetail" class="form-control" placeholder="Monday – Sunday: 11:00 AM – 10:00 PM">
+            </div>
+
+            <button type="submit" class="btn btn-primary">Save Location & Info</button>
+            <button type="button" class="btn btn-secondary" onclick="loadSettingsForm()">Reset form</button>
+          </form>
+        </div>
+
+        <div style="margin-top:2rem">
+          <h3 style="margin-bottom:1rem">Preview</h3>
+          <div id="settings-preview"></div>
+        </div>
+      </div>
     </main>
   </div>
 
@@ -153,24 +245,26 @@
 
     if (!isAdmin()) {
       showToast('Admin password required. Login as admin first.', 'error');
-      setTimeout(() => window.location.href = 'login.html', 1200);
+      setTimeout(function () { window.location.href = 'login.html'; }, 1200);
     } else {
       document.getElementById('header').innerHTML = renderHeader('admin');
     }
 
     function showSection(name, linkEl) {
-      document.querySelectorAll('[id^="section-"]').forEach(el => el.classList.add('hidden'));
-      const section = document.getElementById('section-' + name);
+      document.querySelectorAll('[id^="section-"]').forEach(function (el) { el.classList.add('hidden'); });
+      var section = document.getElementById('section-' + name);
       if (section) section.classList.remove('hidden');
 
-      document.querySelectorAll('.admin-nav a').forEach(a => a.classList.remove('active'));
-      document.querySelectorAll('.admin-mobile-nav a').forEach(a => a.classList.remove('active'));
+      document.querySelectorAll('.admin-nav a').forEach(function (a) { a.classList.remove('active'); });
+      document.querySelectorAll('.admin-mobile-nav a').forEach(function (a) { a.classList.remove('active'); });
 
       if (linkEl) {
         linkEl.classList.add('active');
-        const href = linkEl.getAttribute('href');
+        var href = linkEl.getAttribute('href');
         if (href) {
-          document.querySelectorAll('.admin-nav a[href="' + href + '"], .admin-mobile-nav a[href="' + href + '"]').forEach(a => a.classList.add('active'));
+          document.querySelectorAll('.admin-nav a[href="' + href + '"], .admin-mobile-nav a[href="' + href + '"]').forEach(function (a) {
+            a.classList.add('active');
+          });
         }
       }
 
@@ -179,83 +273,76 @@
       if (name === 'bookings') loadBookings();
       if (name === 'reviews') loadAdminReviews();
       if (name === 'add-product') resetProductForm();
+      if (name === 'settings') {
+        loadSettingsForm();
+        updateSettingsPreview();
+      }
     }
 
     function loadDashboard() {
-      const products = getProducts();
-      const bookings = getBookings();
-      const reviews = getReviews();
-      const pending = bookings.filter(b => b.status === 'pending').length;
+      var products = getProducts();
+      var bookings = getBookings();
+      var reviews = getReviews();
+      var pending = bookings.filter(function (b) { return b.status === 'pending'; }).length;
 
-      document.getElementById('stats-grid').innerHTML = `
-        <div class="stat-card"><div class="label">Menu Items</div><div class="value">${products.length}</div></div>
-        <div class="stat-card"><div class="label">Pending Orders</div><div class="value">${pending}</div></div>
-        <div class="stat-card"><div class="label">Total Reviews</div><div class="value">${reviews.length}</div></div>
-        <div class="stat-card"><div class="label">Total Orders</div><div class="value">${bookings.length}</div></div>
-      `;
+      document.getElementById('stats-grid').innerHTML =
+        '<div class="stat-card"><div class="label">Menu Items</div><div class="value">' + products.length + '</div></div>' +
+        '<div class="stat-card"><div class="label">Pending Orders</div><div class="value">' + pending + '</div></div>' +
+        '<div class="stat-card"><div class="label">Total Reviews</div><div class="value">' + reviews.length + '</div></div>' +
+        '<div class="stat-card"><div class="label">Total Orders</div><div class="value">' + bookings.length + '</div></div>';
 
-      const recent = bookings.slice(0, 5);
-      document.getElementById('recent-bookings').innerHTML = recent.length ? recent.map(b => `
-        <tr>
-          <td>${b.userName}</td>
-          <td>${b.productName}</td>
-          <td>${b.size}</td>
-          <td>${b.quantity}</td>
-          <td><span style="padding:0.2rem 0.6rem;border-radius:12px;font-size:0.8rem;background:${b.status==='pending'?'#FFF3CD':b.status==='confirmed'?'#D4EDDA':'#F8D7DA'}">${b.status}</span></td>
-          <td>${new Date(b.createdAt).toLocaleDateString()}</td>
-        </tr>
-      `).join('') : '<tr><td colspan="6" style="text-align:center;color:var(--maroon-500)">No orders yet</td></tr>';
+      var recent = bookings.slice(0, 5);
+      document.getElementById('recent-bookings').innerHTML = recent.length
+        ? recent.map(function (b) {
+            return '<tr><td>' + b.userName + '</td><td>' + b.productName + '</td><td>' + b.size + '</td><td>' + b.quantity +
+              '</td><td><span style="padding:0.2rem 0.6rem;border-radius:12px;font-size:0.8rem;background:' +
+              (b.status === 'pending' ? '#FFF3CD' : b.status === 'confirmed' ? '#D4EDDA' : '#F8D7DA') + '">' +
+              b.status + '</span></td><td>' + new Date(b.createdAt).toLocaleDateString() + '</td></tr>';
+          }).join('')
+        : '<tr><td colspan="6" style="text-align:center;color:var(--maroon-500)">No orders yet</td></tr>';
     }
 
     function loadInventory() {
-      const products = getProducts();
-      document.getElementById('inventory-table').innerHTML = products.map(p => `
-        <tr>
-          <td><img src="${p.image}" alt="" style="width:48px;height:36px;object-fit:cover;border-radius:6px" onerror="this.src='https://via.placeholder.com/48x36'"></td>
-          <td><strong>${p.name}</strong></td>
-          <td>${p.category}</td>
-          <td>${formatPrice(p.price)}</td>
-          <td class="${getStockClass(p.stock)}">${p.stock}</td>
-          <td>
-            <button class="btn btn-sm btn-secondary" onclick="editProduct('${p.id}')">Edit</button>
-            <button class="btn btn-sm btn-danger" onclick="confirmDelete('${p.id}')">Delete</button>
-          </td>
-        </tr>
-      `).join('');
+      var products = getProducts();
+      document.getElementById('inventory-table').innerHTML = products.map(function (p) {
+        return '<tr><td><img src="' + p.image + '" alt="" style="width:48px;height:36px;object-fit:cover;border-radius:6px" onerror="this.src=\'https://via.placeholder.com/48x36\'"></td>' +
+          '<td><strong>' + p.name + '</strong></td><td>' + p.category + '</td><td>' + formatPrice(p.price) +
+          '</td><td class="' + getStockClass(p.stock) + '">' + p.stock +
+          '</td><td><button class="btn btn-sm btn-secondary" onclick="editProduct(\'' + p.id +
+          '\')">Edit</button> <button class="btn btn-sm btn-danger" onclick="confirmDelete(\'' + p.id + '\')">Delete</button></td></tr>';
+      }).join('');
     }
 
     function loadBookings() {
-      const bookings = getBookings();
-      document.getElementById('bookings-table').innerHTML = bookings.length ? bookings.map(b => `
-        <tr>
-          <td style="font-size:0.85rem">${b.id.slice(-6)}</td>
-          <td>${b.userName}<br><small style="color:var(--maroon-500)">${b.userEmail}</small></td>
-          <td>${b.productName}</td>
-          <td>${b.size} × ${b.quantity}</td>
-          <td><a href="tel:${b.phone}">${b.phone}</a></td>
-          <td><span style="padding:0.2rem 0.6rem;border-radius:12px;font-size:0.8rem;background:${b.status==='pending'?'#FFF3CD':b.status==='confirmed'?'#D4EDDA':'#F8D7DA'}">${b.status}</span></td>
-          <td>
-            ${b.status === 'pending' ? `
-              <button class="btn btn-sm btn-primary" onclick="setBookingStatus('${b.id}','confirmed')">Confirm</button>
-              <button class="btn btn-sm btn-danger" onclick="setBookingStatus('${b.id}','cancelled')">Cancel</button>
-            ` : '-'}
-          </td>
-        </tr>
-      `).join('') : '<tr><td colspan="7" style="text-align:center">No orders yet</td></tr>';
+      var bookings = getBookings();
+      document.getElementById('bookings-table').innerHTML = bookings.length
+        ? bookings.map(function (b) {
+            return '<tr><td style="font-size:0.85rem">' + b.id.slice(-6) + '</td><td>' + b.userName +
+              '<br><small style="color:var(--maroon-500)">' + b.userEmail + '</small></td><td>' + b.productName +
+              '</td><td>' + b.size + ' × ' + b.quantity + '</td><td><a href="tel:' + b.phone + '">' + b.phone +
+              '</a></td><td><span style="padding:0.2rem 0.6rem;border-radius:12px;font-size:0.8rem;background:' +
+              (b.status === 'pending' ? '#FFF3CD' : b.status === 'confirmed' ? '#D4EDDA' : '#F8D7DA') + '">' +
+              b.status + '</span></td><td>' +
+              (b.status === 'pending'
+                ? '<button class="btn btn-sm btn-primary" onclick="setBookingStatus(\'' + b.id +
+                  '\',\'confirmed\')">Confirm</button> <button class="btn btn-sm btn-danger" onclick="setBookingStatus(\'' +
+                  b.id + '\',\'cancelled\')">Cancel</button>'
+                : '-') +
+              '</td></tr>';
+          }).join('')
+        : '<tr><td colspan="7" style="text-align:center">No orders yet</td></tr>';
     }
 
     function loadAdminReviews() {
-      const reviews = getReviews();
-      document.getElementById('reviews-table').innerHTML = reviews.length ? reviews.map(r => `
-        <tr>
-          <td>${r.userName}</td>
-          <td>${r.productName}</td>
-          <td>${starsHtml(r.rating, 14)}</td>
-          <td style="max-width:220px;font-size:0.9rem">${r.comment}</td>
-          <td>${new Date(r.createdAt).toLocaleDateString()}</td>
-          <td><button class="btn btn-sm btn-danger" onclick="adminDeleteReview('${r.id}')">Delete</button></td>
-        </tr>
-      `).join('') : '<tr><td colspan="6" style="text-align:center">No reviews yet</td></tr>';
+      var reviews = getReviews();
+      document.getElementById('reviews-table').innerHTML = reviews.length
+        ? reviews.map(function (r) {
+            return '<tr><td>' + r.userName + '</td><td>' + r.productName + '</td><td>' + starsHtml(r.rating, 14) +
+              '</td><td style="max-width:220px;font-size:0.9rem">' + r.comment +
+              '</td><td>' + new Date(r.createdAt).toLocaleDateString() +
+              '</td><td><button class="btn btn-sm btn-danger" onclick="adminDeleteReview(\'' + r.id + '\')">Delete</button></td></tr>';
+          }).join('')
+        : '<tr><td colspan="6" style="text-align:center">No reviews yet</td></tr>';
     }
 
     function adminDeleteReview(id) {
@@ -275,7 +362,7 @@
     }
 
     function editProduct(id) {
-      const p = getProductById(id);
+      var p = getProductById(id);
       if (!p) return;
       document.getElementById('edit-product-id').value = p.id;
       document.getElementById('p-name').value = p.name;
@@ -299,15 +386,18 @@
 
     function handleProductSubmit(e) {
       e.preventDefault();
-      const id = document.getElementById('edit-product-id').value;
-      const data = {
+      var id = document.getElementById('edit-product-id').value;
+      var data = {
         name: document.getElementById('p-name').value,
         category: document.getElementById('p-category').value,
         price: Number(document.getElementById('p-price').value),
-        originalPrice: document.getElementById('p-original').value ? Number(document.getElementById('p-original').value) : null,
+        originalPrice: document.getElementById('p-original').value
+          ? Number(document.getElementById('p-original').value)
+          : null,
         stock: Number(document.getElementById('p-stock').value),
-        sizes: document.getElementById('p-sizes').value.split(',').map(s => s.trim()).filter(Boolean),
-        image: document.getElementById('p-image').value || 'https://via.placeholder.com/400x300/8B1A1A/C9A227?text=Radhe+Radhe',
+        sizes: document.getElementById('p-sizes').value.split(',').map(function (s) { return s.trim(); }).filter(Boolean),
+        image: document.getElementById('p-image').value ||
+          'https://via.placeholder.com/400x300/8B1A1A/C9A227?text=Radhe+Radhe',
         description: document.getElementById('p-desc').value,
         badge: document.getElementById('p-badge').value || null
       };
@@ -329,6 +419,58 @@
         showToast('Item deleted', 'success');
         loadInventory();
       }
+    }
+
+    /* ===== SETTINGS / LOCATION ===== */
+    function loadSettingsForm() {
+      var s = getSettings();
+      document.getElementById('s-name').value = s.restaurantName || '';
+      document.getElementById('s-tagline').value = s.tagline || '';
+      document.getElementById('s-about').value = s.about || '';
+      document.getElementById('s-promo').value = s.promoText || '';
+      document.getElementById('s-hero').value = s.heroSubtitle || '';
+      document.getElementById('s-address').value = s.address || '';
+      document.getElementById('s-city').value = s.city || '';
+      document.getElementById('s-pincode').value = s.pincode || '';
+      document.getElementById('s-mapurl').value = s.mapUrl || '';
+      document.getElementById('s-mapembed').value = s.mapEmbed || '';
+      document.getElementById('s-phone').value = s.phone || '';
+      document.getElementById('s-whatsapp').value = s.whatsapp || '';
+      document.getElementById('s-email').value = s.email || '';
+      document.getElementById('s-hours').value = s.hours || '';
+      document.getElementById('s-hoursdetail').value = s.hoursDetail || '';
+    }
+
+    function updateSettingsPreview() {
+      var el = document.getElementById('settings-preview');
+      if (el && typeof renderLocationBlock === 'function') {
+        el.innerHTML = renderLocationBlock();
+      }
+    }
+
+    function handleSettingsSubmit(e) {
+      e.preventDefault();
+      var partial = {
+        restaurantName: document.getElementById('s-name').value.trim(),
+        tagline: document.getElementById('s-tagline').value.trim(),
+        about: document.getElementById('s-about').value.trim(),
+        promoText: document.getElementById('s-promo').value.trim(),
+        heroSubtitle: document.getElementById('s-hero').value.trim(),
+        address: document.getElementById('s-address').value.trim(),
+        city: document.getElementById('s-city').value.trim(),
+        pincode: document.getElementById('s-pincode').value.trim(),
+        mapUrl: document.getElementById('s-mapurl').value.trim(),
+        mapEmbed: document.getElementById('s-mapembed').value.trim(),
+        phone: document.getElementById('s-phone').value.trim(),
+        whatsapp: document.getElementById('s-whatsapp').value.trim().replace(/\D/g, ''),
+        email: document.getElementById('s-email').value.trim(),
+        hours: document.getElementById('s-hours').value.trim(),
+        hoursDetail: document.getElementById('s-hoursdetail').value.trim()
+      };
+      saveSettings(partial);
+      showToast('Location & info saved! Visible on Home, Contact & Footer.', 'success');
+      updateSettingsPreview();
+      document.getElementById('header').innerHTML = renderHeader('admin');
     }
 
     loadDashboard();
